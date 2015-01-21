@@ -17,7 +17,7 @@ public class PoisonWater extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getCommand("posionwater").setExecutor(new PoisonWaterCommand(this));
+        getCommand("poisonwater").setExecutor(new PoisonWaterCommand(this));
         saveDefaultConfig();
     }
 
