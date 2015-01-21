@@ -1,26 +1,52 @@
 package me.sgray.poisonwater;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import me.sgray.poisonwater.events.EnterWaterEvent;
+import me.sgray.poisonwater.events.LeaveWaterEvent;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class PoisonWater extends JavaPlugin implements Listener {
+    private Set<UUID> affectedPlayers;
+    int taskId = 0;
+
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        disablePoisontask();
+    }
 
     @Override
     public void onEnable() {
-        getCommand("poisonwater").setExecutor(new PoisonWaterCommand(this));
         saveDefaultConfig();
+        affectedPlayers = new HashSet<UUID>();
+        getCommand("poisonwater").setExecutor(new PoisonWaterCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
+        enablePoisonTask();
+    }
+
+    private void enablePoisonTask() {
+       this.taskId = getServer().getScheduler().runTaskTimerAsynchronously(
+               this,
+               new PoisonTask(this),
+               20L,
+               20L).getTaskId();
+    }
+
+    private void disablePoisontask() {
+        if (this.taskId > 0) {
+            getServer().getScheduler().cancelTask(this.taskId);
+            this.taskId = 0;
+        }
+        
     }
 
     @EventHandler
@@ -29,35 +55,53 @@ public class PoisonWater extends JavaPlugin implements Listener {
             return;
         }
 
-        Location initial = e.getFrom();
-        Location feet = e.getTo();
+        if (inWater(e.getFrom()) && !inWater(e.getTo())) {
+            LeaveWaterEvent leaveWater = new LeaveWaterEvent(e.getPlayer());
+            getServer().getPluginManager().callEvent(leaveWater);
+        }
 
-        Player player = e.getPlayer();
-        if (feet.getBlock().getType().equals(Material.WATER) 
-                || feet.getBlock().getType().equals(Material.STATIONARY_WATER)) {
-            if (!player.hasPermission("poisonwater.ignore")) {
-                player.addPotionEffect(new PotionEffect(
-                        PotionEffectType.getByName(potionType()), 
-                        potionDuration(), 
-                        potionMultiplier()
-                        ), false);
-            }
+        if (inWater(e.getTo()) && !affectedPlayers.contains(e.getPlayer().getUniqueId())) {
+            EnterWaterEvent enterWater = new EnterWaterEvent(e.getPlayer());
+            getServer().getPluginManager().callEvent(enterWater);
         }
     }
 
+    @EventHandler
+    public void onEnterWater(EnterWaterEvent e) {
+        if (affectedPlayers.contains(e.getPlayer().getUniqueId())) {
+            return;
+        }
+        addAffected(e.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onLeaveWater(LeaveWaterEvent e) {
+        if (affectedPlayers.contains(e.getPlayer().getUniqueId())) {
+            removeAffected(e.getPlayer().getUniqueId());
+        }
+    }
+
+    protected Set<UUID> getAffected() {
+        return this.affectedPlayers;
+    }
+
+    protected void addAffected(UUID uuid) {
+        affectedPlayers.add(uuid);
+    }
+
+    protected void removeAffected(UUID uuid) {
+        affectedPlayers.remove(uuid);
+    }
+
+    private boolean inWater(Location loc) {
+        Material mat = loc.getBlock().getType();
+        if (mat.equals(Material.WATER) || mat.equals(Material.STATIONARY_WATER)) {
+            return true;
+        }
+        return false;
+    }
+
     private List<String> activeWorlds() {
-    	return getConfig().getStringList("worlds");
-    }
-
-    private String potionType() {
-        return getConfig().getString("effect.type");
-    }
-
-    private int potionDuration() {
-        return (getConfig().getInt("effect.duration") * 20);
-    }
-
-    private int potionMultiplier() {
-        return getConfig().getInt("effect.amplifier");
+        return getConfig().getStringList("worlds");
     }
 }
