@@ -6,12 +6,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class PoisonWater extends JavaPlugin {
+public class PoisonWater extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {}
 
@@ -19,6 +20,7 @@ public class PoisonWater extends JavaPlugin {
     public void onEnable() {
         getCommand("poisonwater").setExecutor(new PoisonWaterCommand(this));
         saveDefaultConfig();
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
     @EventHandler
@@ -27,15 +29,12 @@ public class PoisonWater extends JavaPlugin {
             return;
         }
 
-        if (Math.abs(e.getFrom().getY() - e.getTo().getY()) < 1.1) {
-            return;
-        }
-
         Location feet = e.getTo();
         Player player = e.getPlayer();
-        if (feet.getBlock().getType().equals(Material.WATER)) {
+        if (feet.getBlock().getType().equals(Material.WATER) 
+                || feet.getBlock().getType().equals(Material.STATIONARY_WATER)) {
             if (!player.hasPermission("poisonwater.ignore")) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 1, 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 1), false);
             }
         }
     }
