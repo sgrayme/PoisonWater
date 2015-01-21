@@ -15,11 +15,27 @@ public class PoisonWaterCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String cmdName = cmd.getName().toLowerCase();
 
-        if (!cmdName.equals("example")) {
+        if (!cmdName.equals("poisonwater")) {
             return false;
         }
 
-        sender.sendMessage("Successfully used example command!");
+        if (!sender.hasPermission("poisonwater.admin")) {
+            return false;
+        }
+
+        switch (args.length) {
+            case 0:
+                sender.sendMessage(plugin.getDescription().getName() + "" + plugin.getDescription().getVersion());
+                break;
+            case 1:
+                if (args[0].equals("reload")) {
+                    plugin.reloadConfig();
+                    sender.sendMessage("Config reloaded for " + plugin.getDescription().getName());
+                    break;
+                }
+            default:
+                sender.sendMessage("Invalid command for " + plugin.getDescription().getName());
+        }
 
         return true;
     }
