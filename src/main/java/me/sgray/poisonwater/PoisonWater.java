@@ -17,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PoisonWater extends JavaPlugin implements Listener {
     private Set<UUID> affectedPlayers;
-    int taskId = 0;
+    private int taskId = 0;
 
     @Override
     public void onDisable() {
@@ -31,22 +31,6 @@ public class PoisonWater extends JavaPlugin implements Listener {
         getCommand("poisonwater").setExecutor(new PoisonWaterCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
         enablePoisonTask();
-    }
-
-    private void enablePoisonTask() {
-       this.taskId = getServer().getScheduler().runTaskTimerAsynchronously(
-               this,
-               new PoisonTask(this),
-               20L,
-               20L).getTaskId();
-    }
-
-    private void disablePoisontask() {
-        if (this.taskId > 0) {
-            getServer().getScheduler().cancelTask(this.taskId);
-            this.taskId = 0;
-        }
-        
     }
 
     @EventHandler
@@ -91,6 +75,21 @@ public class PoisonWater extends JavaPlugin implements Listener {
 
     protected void removeAffected(UUID uuid) {
         affectedPlayers.remove(uuid);
+    }
+
+    private void enablePoisonTask() {
+       this.taskId = getServer().getScheduler().runTaskTimerAsynchronously(
+               this,
+               new PoisonTask(this),
+               20L,
+               20L).getTaskId();
+    }
+
+    private void disablePoisontask() {
+        if (this.taskId > 0) {
+            getServer().getScheduler().cancelTask(this.taskId);
+            this.taskId = 0;
+        }
     }
 
     private boolean inWater(Location loc) {
