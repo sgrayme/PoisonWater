@@ -29,17 +29,35 @@ public class PoisonWater extends JavaPlugin implements Listener {
             return;
         }
 
+        Location initial = e.getFrom();
         Location feet = e.getTo();
+
         Player player = e.getPlayer();
         if (feet.getBlock().getType().equals(Material.WATER) 
                 || feet.getBlock().getType().equals(Material.STATIONARY_WATER)) {
             if (!player.hasPermission("poisonwater.ignore")) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 1), false);
+                player.addPotionEffect(new PotionEffect(
+                        PotionEffectType.getByName(potionType()), 
+                        potionDuration(), 
+                        potionMultiplier()
+                        ), false);
             }
         }
     }
 
     private List<String> activeWorlds() {
     	return getConfig().getStringList("worlds");
+    }
+
+    private String potionType() {
+        return getConfig().getString("effect.type");
+    }
+
+    private int potionDuration() {
+        return (getConfig().getInt("effect.duration") * 20);
+    }
+
+    private int potionMultiplier() {
+        return getConfig().getInt("effect.amplifier");
     }
 }

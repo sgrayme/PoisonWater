@@ -1,1 +1,5 @@
+effect:
+    type: poison
+    duration: 1
+    amplifier: 0
 worlds: []
