@@ -7,9 +7,11 @@ website: ${url}
 main: ${mainClass}
 
 commands:
-    example:
-        description: An example command
-        permission: spigotplugin.example
+    poisonwater:
+        description: Utility command for PoisonWater plugin
+        permission: poisonwater.admin
         usage: /<command>
 
-permissions: {}
+permissions:
+    poisonwater.admin:
+        default: op
