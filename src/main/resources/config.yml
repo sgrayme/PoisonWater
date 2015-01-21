@@ -2,4 +2,5 @@ effect:
     type: poison
     duration: 1
     amplifier: 0
+    chance: 0.5
 worlds: []

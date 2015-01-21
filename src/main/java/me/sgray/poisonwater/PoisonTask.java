@@ -22,7 +22,9 @@ public class PoisonTask implements Runnable {
                     if (!plugin.getServer().getPlayer(uuid).isOnline()) {
                         plugin.removeAffected(uuid);
                     } else {
-                        affectPlayer(plugin.getServer().getPlayer(uuid));
+                        if (doEffect()) {
+                            affectPlayer(plugin.getServer().getPlayer(uuid));
+                        }
                     }
                 }
             }});
@@ -38,6 +40,14 @@ public class PoisonTask implements Runnable {
         }
     }
 
+    private boolean doEffect() {
+        double value = Math.random();
+        if (value <= potionChance()) {
+            return true;
+        }
+        return false;
+    }
+
     private String potionType() {
         return plugin.getConfig().getString("effect.type");
     }
@@ -48,6 +58,10 @@ public class PoisonTask implements Runnable {
 
     private int potionMultiplier() {
         return plugin.getConfig().getInt("effect.amplifier");
+    }
+
+    private double potionChance() {
+        return plugin.getConfig().getDouble("effect.chance");
     }
 
 }
