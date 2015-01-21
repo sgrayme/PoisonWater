@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.sgray.template</groupId>
+    <groupId>me.sgray.poisonwater</groupId>
     <artifactId>SpigotPlugin</artifactId>
     <!-- Version is used in plugin.yml -->
     <version>0.1-SNAPSHOT</version>
@@ -8,9 +8,8 @@
 
     <!-- Plugin Information -->
     <!-- Name, Description, and URL are used in plugin.yml -->
-    <name>SpigotPlugin</name>
-    <description>Example of a Spigot plugin using Maven</description>
-    <url>http://sgray.me/project/spigotplugin</url>
+    <name>PoisonWater</name>
+    <url>http://sgray.me/project/poisonwater</url>
 
     <licenses>
         <license>
@@ -48,7 +47,7 @@
     <properties>
         <!--  Author and MainClass are used in plugin.yml -->
         <author>SGray</author>
-        <mainClass>me.sgray.template.spigotplugin.SpigotPlugin</mainClass>
+        <mainClass>me.sgray.poisonwater.PoisonWater</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -100,4 +99,5 @@
             </plugin>
         </plugins>
     </build>
+    <description>The water is dangerous!</description>
 </project>
