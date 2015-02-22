@@ -9,6 +9,7 @@
     <!-- Plugin Information -->
     <!-- Name, Description, and URL are used in plugin.yml -->
     <name>PoisonWater</name>
+    <description>The water is dangerous! Apply effects to players who enter water.</description>
     <url>http://sgray.me/project/poisonwater</url>
 
     <licenses>
@@ -99,5 +100,4 @@
             </plugin>
         </plugins>
     </build>
-    <description>The water is dangerous! Aply effects t players who enter water.</description>
 </project>
