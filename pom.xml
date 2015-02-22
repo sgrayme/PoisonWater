@@ -99,5 +99,5 @@
             </plugin>
         </plugins>
     </build>
-    <description>The water is dangerous!</description>
+    <description>The water is dangerous! Aply effects t players who enter water.</description>
 </project>
